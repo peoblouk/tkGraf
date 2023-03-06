@@ -1,4 +1,4 @@
-import scipy.interpolate as inp
+import scipy.interpolate as inp #https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.UnivariateSpline.html
 import pylab as lab # grafy
 
 x = "0 0.3 0.5 0.8 1 2 3".split()
@@ -13,12 +13,18 @@ for cislo in x:
     bagr.append(float(x))
 x = bagr
 '''
-newX = lab.linspace(0,3, 33)
-spl = inp.CubicSpline(x,y)
+
+newX = lab.linspace(0,3, 333)
+
+# aproximace
+# spl = inp.CubicSpline(x,y)
+# spl = inp.LSQUnivariateSpline(x,y) # metoda nejmenších čtverců
+spl = inp.UnivariateSpline(x,y) # apro
+# spl = inp.BSpline(x,y, 3)
 newY = spl(newX)
 
 lab.plot(x,y,"o", label="měřící body")
-lab.plot(newX, newY, "x", label="interpolace")
+lab.plot(newX, newY, ":", label="interpolace")
 lab.grid(1)
 lab.legend()
 lab.show()

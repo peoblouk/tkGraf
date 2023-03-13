@@ -2,10 +2,8 @@
 
 from os.path import basename, splitext
 import tkinter as tk
-from tkinter import filedialog
-from tkinter import messagebox
-import os.path
-from pylab import plot, show
+
+# from tkinter import ttk
 
 
 class MyEntry(tk.Entry):
@@ -27,6 +25,7 @@ class MyEntry(tk.Entry):
         self.variable.set(new)
 
 
+
 class Application(tk.Tk):
     name = basename(splitext(basename(__file__.capitalize()))[0])
     name = "Foo"
@@ -35,32 +34,27 @@ class Application(tk.Tk):
         super().__init__(className=self.name)
         self.title(self.name)
         self.bind("<Escape>", self.quit)
-        self.pathEntry = MyEntry(self, text="Vyber soubor")
-        self.pathEntry.pack()
-        self.btnChoice = tk.Button(self, text="...", command=self.choice)
-        self.btnChoice.pack()
-        self.btnShow = tk.Button(self, text="Kreslit", command=self.show)
-        self.btnShow.pack()
+        self.lbl = tk.Label(self, text="tkGraf")
+        self.lbl.pack()
+
+        #! Výběr souboru
+        self.fileFrame = tk.LabelFrame(self, text='Soubor')
+        self.fileFrame.pack(padx=5, pady=5)
+        self.fileEntry = MyEntry(self.fileFrame)
+        self.fileEntry.pack()
+        self.fileBtn = tk.Button(self.fileFrame, text='...')
+        self.fileBtn.pack(anchor='e')
+        
+        #! Výběr formátu grafu
+        self.dataformatVar = tk.IntVar() # Data pro RadioButton
+        self.radkyRbtn = tk.Radiobutton(self.fileFrame,text="Data jsou ve sloupcích", variable=self.dataformatVar, value=0)
+        self.radkyRbtn.pack(anchor='w')
+        self.sloupceRbtn = tk.Radiobutton(self.fileFrame, text="Data jsou ve sloupcích", variable=self.dataformatVar, value=1)
+        self.sloupceRbtn.pack(anchor='w')
+
+        #! Tlačítko quit
         self.btn = tk.Button(self, text="Quit", command=self.quit)
         self.btn.pack()
-
-
-    def choice(self):
-        self.pathEntry.value = filedialog.askopenfilename()
-
-    def show(self):
-        if not os.path.isfile(self.pathEntry.value):
-            messagebox.showerror("Error!", "Soubor neexistuje!")
-            return
-        xaxis = []
-        yaxis = []
-        with open(self.pathEntry.value) as f:
-            while line := f.readline():
-                x, y = line.split()
-                xaxis.append(float(x))
-                yaxis.append(float(y))
-            plot(xaxis, yaxis)
-            show()
 
     def quit(self, event=None):
         super().quit()

@@ -37,7 +37,7 @@ class Application(tk.Tk):
         self.lbl = tk.Label(self, text="tkGraf")
         self.lbl.pack()
 
-        #! Výběr souboru
+    #* Výběr souboru - FRAME
         self.fileFrame = tk.LabelFrame(self, text='Soubor')
         self.fileFrame.pack(padx=5, pady=5)
         self.fileEntry = MyEntry(self.fileFrame)
@@ -47,15 +47,43 @@ class Application(tk.Tk):
         
         #! Výběr formátu grafu
         self.dataformatVar = tk.IntVar() # Data pro RadioButton
-        self.radkyRbtn = tk.Radiobutton(self.fileFrame,text="Data jsou ve sloupcích", variable=self.dataformatVar, value=0)
+        self.radkyRbtn = tk.Radiobutton(self.fileFrame,text="Data jsou v řádcích", variable=self.dataformatVar, value=0)
         self.radkyRbtn.pack(anchor='w')
         self.sloupceRbtn = tk.Radiobutton(self.fileFrame, text="Data jsou ve sloupcích", variable=self.dataformatVar, value=1)
         self.sloupceRbtn.pack(anchor='w')
 
         #! Tlačítko quit
         self.btn = tk.Button(self, text="Quit", command=self.quit)
-        self.btn.pack()
+        self.btn.pack
 
+    #* Nastavení parametrů grafu - FRAME
+        self.grafFrame = tk.LabelFrame(self, text='Parametry grafu')
+        self.grafFrame.pack(padx=5, pady=5)
+
+        # Nastavení titulku grafu
+        tk.Label(self.grafFrame, text='Titulek').grid(row=0, column=0)
+        self.titleEntry = MyEntry(self.grafFrame)
+        self.titleENtry.grid(row=0, column=1)
+
+        # Nastavení popisku osy x
+        tk.Label(self.grafFrame, text='popisek X').grid(row=1, column=0)
+        self.xlabelEntry = MyEntry(self.grafFrame)
+        self.xlabelEntry.grid(row=1, column=1)
+
+        # Nastavení popisku osy y
+        tk.Label(self.grafFrame, text='popisek Y').grid(row=2, column=0)
+        self.ylabelEntry = MyEntry(self.grafFrame)
+        self.ylabelEntry.grid(row=2, column=1)
+
+        # Nastavení mřížky
+        tk.Label(self.grafFrame, text='mřížka').grid(row=3, column=0)
+        self.gridChck = tk.Checkbutton(self.grafFrame)
+        self.gridChck.grid(row=3, column=1, sticky='w')
+
+        # Nastavení aproximace
+
+
+    #!Funkce na ukončení aplikace
     def quit(self, event=None):
         super().quit()
 

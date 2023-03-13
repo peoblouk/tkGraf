@@ -81,7 +81,9 @@ class Application(tk.Tk):
         self.gridChck.grid(row=3, column=1, sticky='w')
 
         # Nastavení aproximace
-
+        tk.Label(self.grafFrame, text='aproximace').grid(row=4, column=0)   
+        self.selectAproximation = tk.Checkbutton(self.grafFrame)
+        self.selectAproximation.grid(row=4, column=1, sticky='w')
 
     #!Funkce na ukončení aplikace
     def quit(self, event=None):

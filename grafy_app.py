@@ -4,6 +4,7 @@ from os.path import basename, splitext
 import tkinter as tk
 from tkinter import filedialog # prohlížeč souborů
 import pylab as lab # grafy
+import scipy.interpolate as inp #https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.UnivariateSpline.html
 
 # from tkinter import ttk
 
@@ -79,10 +80,19 @@ class Application(tk.Tk):
         self.gridChck = tk.Checkbutton(self.grafFrame, variable=self.gridVar)
         self.gridChck.grid(row=3, column=1, sticky='w')
 
+        # Nastavení stylu čáry
+        self.lineVar = tk.StringVar(value='none')
+        tk.Label(self.grafFrame, text='styl čáry').grid(row=4, column=0)
+        self.lineOpt = tk.OptionMenu(self.grafFrame, self.lineVar, 'none', '-', ':', '--', '-.')
+        self.lineOpt.grid(row=4, column=1, sticky='w')
+
+        # Nastaveni bodů
+        
         # Nastavení aproximace
-        tk.Label(self.grafFrame, text='aproximace').grid(row=4, column=0)   
-        self.selectAproximation = tk.Checkbutton(self.grafFrame)
-        self.selectAproximation.grid(row=4, column=1, sticky='w')
+        self.aproxVar = tk.BooleanVar(value=False)
+        tk.Label(self.grafFrame, text='aproximace').grid(row=5, column=0)   
+        self.selectAproximation = tk.Checkbutton(self.grafFrame, variable=self.aproxVar)
+        self.selectAproximation.grid(row=5, column=1, sticky='w')
 
         #! Tlačítko kreslit
         tk.Button(self, text='Kreslit', command=self.plotGraph).pack(anchor='w')
@@ -108,15 +118,24 @@ class Application(tk.Tk):
                 y = []
                 while True:
                     line = f.readline()
-                    if line =='':
+                    if line == '':
                         break
                     x1, y1 = line.split(';')
                     x1 = (float(x1.replace(',', '.')))   
                     y1 = (float(y1.replace(',', '.')))   
                     x.append(x1)
                     y.append(y1)
-
-        lab.plot(x,y,'o')
+            if self.aproxVar == True: # nastavení aproximace
+                newX = lab.linspace(0,3, 333)
+                # aproximace
+                # spl = inp.CubicSpline(x,y)
+                spl = inp.LSQUnivariateSpline(x,y) # metoda nejmenších čtverců
+                # spl = inp.UnivariateSpline(x,y) # apro
+                # spl = inp.BSpline(x,y, 3)
+                newY = spl(newX)
+                self
+    
+        lab.plot(x,y, 'o', linestyle=self.lineVar.get())
         lab.title(self.titleEntry.value)
         lab.xlabel(self.xlabelEntry.value)
         lab.ylabel(self.ylabelEntry.value)

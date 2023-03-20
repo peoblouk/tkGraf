@@ -54,12 +54,6 @@ class Application(tk.Tk):
         self.sloupceRbtn = tk.Radiobutton(self.fileFrame, text="Data jsou ve sloupcích", variable=self.dataformatVar, value=1)
         self.sloupceRbtn.pack(anchor='w')
 
-        #! Tlačítko kreslit
-        tk.Button(self, text='Kreslit', command=self.plotGraph).pack(anchor='w')
-
-        #! Tlačítko quit
-        tk.Button(self, text='Quit', command=self.quit).pack(anchor='e')
-
     #* Nastavení parametrů grafu - FRAME
         self.grafFrame = tk.LabelFrame(self, text='Parametry grafu')
         self.grafFrame.pack(padx=5, pady=5)
@@ -80,14 +74,21 @@ class Application(tk.Tk):
         self.ylabelEntry.grid(row=2, column=1)
 
         # Nastavení mřížky
+        self.gridVar = tk.BooleanVar(value=False)
         tk.Label(self.grafFrame, text='mřížka').grid(row=3, column=0)
-        self.gridChck = tk.Checkbutton(self.grafFrame)
+        self.gridChck = tk.Checkbutton(self.grafFrame, variable=self.gridVar)
         self.gridChck.grid(row=3, column=1, sticky='w')
 
         # Nastavení aproximace
         tk.Label(self.grafFrame, text='aproximace').grid(row=4, column=0)   
         self.selectAproximation = tk.Checkbutton(self.grafFrame)
         self.selectAproximation.grid(row=4, column=1, sticky='w')
+
+        #! Tlačítko kreslit
+        tk.Button(self, text='Kreslit', command=self.plotGraph).pack(anchor='w')
+
+        #! Tlačítko quit
+        tk.Button(self, text='Quit', command=self.quit).pack(anchor='e')
 
     #! Funkce na select souboru
     def fileSelect(self, event=None):
@@ -96,15 +97,30 @@ class Application(tk.Tk):
 
     def plotGraph(self):
         with open(self.filename, 'r') as f:
-            if self.dataformatVar.get() == 1: #? data jsou ve sloupcích 
+            if self.dataformatVar.get() == 0: #? data jsou v řádcích
                 x = f.readline().split(';')
                 y = f.readline().split(';')
                 x = [float(i.replace(',', '.')) for i in x]
                 y = [float(i.replace(',', '.')) for i in y]
 
-            elif self.dataformatVar.get() == 1: #? data jsou v řádcích
-                pass
+            elif self.dataformatVar.get() == 1: #? data jsou ve sloupcích
+                x = []
+                y = []
+                while True:
+                    line = f.readline()
+                    if line =='':
+                        break
+                    x1, y1 = line.split(';')
+                    x1 = (float(x1.replace(',', '.')))   
+                    y1 = (float(y1.replace(',', '.')))   
+                    x.append(x1)
+                    y.append(y1)
+
         lab.plot(x,y,'o')
+        lab.title(self.titleEntry.value)
+        lab.xlabel(self.xlabelEntry.value)
+        lab.ylabel(self.ylabelEntry.value)
+        lab.grid(self.gridVar.get())
         lab.show()
 
     #!Funkce na ukončení aplikace
